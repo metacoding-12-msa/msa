@@ -5,6 +5,7 @@ import org.springframework.web.socket.*;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.socket.sockjs.client.*;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 
 import java.net.URI;
 import java.util.*;
@@ -33,7 +34,7 @@ public class WebSocketProxyConfig extends TextWebSocketHandler {
         );
         SockJsClient sockJsClient = new SockJsClient(transports);
         
-        WebSocketSession backend = sockJsClient.doHandshake(new TextWebSocketHandler() {
+        WebSocketSession backend = sockJsClient.execute(new TextWebSocketHandler() {
             @Override
             protected void handleTextMessage(WebSocketSession session, TextMessage msg) throws Exception {
                 if (client.isOpen()) client.sendMessage(msg);
@@ -43,7 +44,7 @@ public class WebSocketProxyConfig extends TextWebSocketHandler {
             public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
                 if (client.isOpen()) client.close(status);
             }
-        }, null, backendUri).get();
+        }, new WebSocketHttpHeaders(), backendUri).get();
 
         backendByClientId.put(client.getId(), backend);
     }

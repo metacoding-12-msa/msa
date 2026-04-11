@@ -9,4 +9,3 @@ spec:
     app: order
   ports:
     - port: 8081
-      targetPort: 8081

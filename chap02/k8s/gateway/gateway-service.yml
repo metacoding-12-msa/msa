@@ -9,4 +9,3 @@ spec:
     app: gateway
   ports:
     - port: 80
-      targetPort: 80
